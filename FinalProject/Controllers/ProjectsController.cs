@@ -4,7 +4,6 @@ using Domain.Extensions;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Threading.Tasks;
 
 namespace FinalProject.Controllers;
 
@@ -12,32 +11,10 @@ public class ProjectsController(IProjectService projectService) : Controller
 {
     private readonly IProjectService _projectService = projectService;
 
-    // Dummy Data for testing
-
-    //public IActionResult Index()
-    //{
-    //    var viewModel = new ProjectsViewModel()
-    //    {
-    //        Projects = SetProjects(),
-    //        AddProjectFormData = new AddProjectViewModel
-    //        {
-    //            Members = SetMembers()
-    //        },
-    //        EditProjectFormData = new EditProjectViewModel
-    //        {
-    //            Members = SetMembers(),
-    //            Statuses = SetStatuses()
-    //        }
-    //    };
-
-    //    return View(viewModel);
-    //}
-
-    [HttpPost]
     [Route("/projects")]
-    public IActionResult Index() // Fix with the Database stuff when front end is connected to backend
+    public IActionResult Index()
     {
-        var model = new ProjectsViewModel
+        var viewModel = new ProjectsViewModel()
         {
             Projects = SetProjects(),
             AddProjectFormData = new AddProjectViewModel
@@ -51,7 +28,7 @@ public class ProjectsController(IProjectService projectService) : Controller
             }
         };
 
-        return View(model);
+        return View(viewModel);
     }
 
     [HttpPost]
@@ -68,21 +45,11 @@ public class ProjectsController(IProjectService projectService) : Controller
     {
         return View();
     }
-    [HttpPost]
+    [HttpDelete]
     public IActionResult Delete(string id)
     {
         return View();
     }
-
-
-
-
-
-
-
-
-
-
 
 
     private IEnumerable<ProjectViewModel> SetProjects(){
