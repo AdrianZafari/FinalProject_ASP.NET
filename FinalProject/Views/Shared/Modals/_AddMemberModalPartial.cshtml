@@ -1,0 +1,66 @@
+﻿@model AddMemberViewModel
+
+
+<section id="add-member-modal" class="modal">
+    <div class="card">
+        <div class="card-header">
+            <h3>Add Team Member</h3>
+            <button data-type="close" data-target="#add-member-modal" class="btn-close"></button>
+        </div>
+        <div class="card-body">
+
+            <form asp-controller="" asp-action="" method="post" enctype="multipart/form-data" novalidate>
+                <div class="form-group">
+                    <div id="upload-trigger" class="image-preview-container user-image">
+                        <img id="image-preview" src="#" alt="image preview" class="hide">
+                        <div id="image-preview-icon-container" class="circle circle-gray">
+                            <i id="image-preview-icon" class="fa-solid fa-camera"></i>
+                        </div>
+                    </div>
+                    <input type="file" id="image-upload" accept="image/*">
+                </div>
+
+                <div class="form-horizontal-group">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="text" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input type="text" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Job Title</label>
+                    <input type="text" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <input type="text" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="date" class="form-input">
+                </div>
+
+
+            </form>
+
+            <button type="submit" class="btn">Create</button>
+
+        </div>
+    </div>
+</section>

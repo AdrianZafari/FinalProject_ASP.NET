@@ -1,0 +1,27 @@
+﻿@model MembersViewModel
+@{
+    ViewData["Title"] = "Members";
+}
+
+<div id="members" class="page">
+    <div class="page-header">
+        <h1>Team Members</h1>
+        <button type="button" class="btn btn-add" data-type="modal" data-target="#add-member-modal">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add Team Member</span>
+        </button>
+    </div>
+
+    <section id="project-list" class="member-list">
+        @if (Model.Members != null && Model.Members.Any())
+        {
+            @foreach (var member in Model.Members)
+            {
+                @await Html.PartialAsync("ListItems/_MemberListItemPartial", member)
+            }
+        }    
+    </section>
+</div>
+
+@await Html.PartialAsync("Modals/_AddMemberModalPartial", Model.AddMemberFormData)
+@await Html.PartialAsync("Modals/_EditMemberModalPartial", Model.EditMemberFormData)

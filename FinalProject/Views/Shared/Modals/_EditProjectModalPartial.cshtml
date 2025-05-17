@@ -1,0 +1,116 @@
+﻿@model EditProjectViewModel
+
+
+<section id="edit-project-modal" class="modal">
+    <div class="card">
+        <div class="card-header">
+            <h3>Edit Project</h3>
+            <button data-type="close" data-target="#edit-project-modal" class="btn-close"></button>
+        </div>
+        <div class="card-body">
+
+            <form asp-controller="" asp-action="" method="post" enctype="multipart/form-data" novalidate>
+                <div class="form-group">
+                    <div id="edit-upload-trigger" class="image-preview-container project-image">
+                        <img id="edit-image-preview" src="#" alt="edit image preview" class="hide">
+                        <div id="edit-image-preview-icon-container" class="circle circle-gray">
+                            <i id="edit-image-preview-icon" class="fa-solid fa-camera"></i>
+                        </div>
+                    </div>
+                    <input type="file" id="edit-image-upload" accept="image/*">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Project Name</label>
+                    <input type="text" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Client Name</label>
+                    <input type="text" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <div class="wysiwyg">
+                        <textarea id="edit-project-description" type="text"></textarea>
+                        <div id="edit-project-description-wysiwyg-editor" class="wysiwyg-editor"></div>
+                        <div id="edit-project-description-wysiwyg-toolbar" class="wysiwyg-toolbar">
+                            <span class="ql-formats">
+                                <button class="ql-bold"></button>
+                                <button class="ql-italic"></button>
+                                <button class="ql-underline"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-align" value=""></button>
+                                <button class="ql-align" value="center"></button>
+                                <button class="ql-align" value="right"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-list" value="bullet"></button>
+                                <button class="ql-list" value="ordered"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-link"></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-horizontal-group">
+                    <div class="form-group">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">End Date</label>
+                        <input type="date" class="form-input">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Member</label>
+                    <div class="form-select" data-placeholder="Choose a member">
+                        <button type="button" class="form-select-trigger">
+                            <span class="form-select-text"></span>
+                        </button>
+                        <ul class="form-select-options">
+                            @foreach (var option in Model.Members)
+                            {
+                                <li class="form-select-option" data-value="@option.Value">@option.Text</li>
+                            }
+                        </ul>
+                        <input type="hidden" name="member-select-value">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Budget</label>
+                    <div class="form-input-extended">
+                        <i class="fa-solid fa-dollar-sign"></i>
+                        <input type="text" class="form-input">
+                    </div>
+                </div>
+            </form>
+
+            <div class="form-group">
+                <label class="form-label">Project Status</label>
+                <div class="form-select" data-placeholder="Choose a status">
+                    <button type="button" class="form-select-trigger">
+                        <span class="form-select-text"></span>
+                    </button>
+                    <ul class="form-select-options">
+                        @foreach (var status in Model.Statuses)
+                        {
+                            <li class="form-select-option" data-value="@status.Value">@status.Text</li>
+                        }
+                    </ul>
+                    <input type="hidden" name="status-select-value" value="1">
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Save</button>
+
+        </div>
+    </div>
+</section>

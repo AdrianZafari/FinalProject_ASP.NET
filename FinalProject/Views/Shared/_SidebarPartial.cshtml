@@ -1,0 +1,19 @@
+﻿
+<aside id="sidebar">
+    <section class="logotype">
+        <a href="@Url.Content("~/")">
+            <img src="/images/logotype/alpha-logotype-icon.svg" alt="alpha">
+            <span>alpha</span>
+        </a>
+    </section>
+    <nav class="nav-links">
+        <a asp-controller="Projects" asp-action="Index" class="nav-link @(Context.Request.Path.Value!.StartsWith("/projects") ? "active" : "")">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>Projects</span>
+        </a>
+        <a asp-controller="Members" asp-action="Index" class="nav-link @(Context.Request.Path.Value!.StartsWith("/admin/members") ? "active" : "")">
+            <i class="fa-solid fa-user-group"></i>
+            <span>Team Members</span>
+        </a>
+    </nav>
+</aside>
