@@ -10,5 +10,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public virtual DbSet<ClientEntity> Clients { get; set; }
     public virtual DbSet<StatusEntity> Statuses { get; set; }
     public virtual DbSet<ProjectEntity> Projects { get; set; }
+    public virtual DbSet<MemberEntity> Members { get; set; } 
 
 }

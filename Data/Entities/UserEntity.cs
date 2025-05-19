@@ -9,9 +9,9 @@ public class UserEntity: IdentityUser
     public string? LastName { get; set; }
     public string? JobTitle { get; set; }
 
-    public string? Address { get; set; }
-    public DateTime? DateOfBirth { get; set; }
-    public string? UserImage { get; set; }
+    //public string? Address { get; set; }
+    //public DateTime? DateOfBirth { get; set; }
+    //public string? UserImage { get; set; }
 
     public virtual ICollection<ProjectEntity> Projects { get; set; } = [];
 }

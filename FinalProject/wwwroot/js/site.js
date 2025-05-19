@@ -1,4 +1,50 @@
-﻿// CLIENT MANAGEMENT MODAL LOGIC, made with the help of GPT. Better UX than a seperate page in my opinion.
+﻿// ADD MEMBER MODAL LOGIC
+
+//const forms = document.querySelectorAll('form')
+//forms.forEach(form => {
+//    form.addEventListener('submit', async (e) => {
+//        e.preventDefault()
+//        const targetId = form.getAttribute('data-target')
+//        const targetElement = document.querySelector(targetId)
+//        e.preventDefault()
+
+//        const formData = new FormData(form)
+
+//        try {
+//            const res = await fetch(form.action, {
+//                method: 'post',
+//                body: formData
+//            })
+
+//            if (!res.status === 400) {
+//                const data = await res.json()
+
+//                if (data.errors) {
+//                    Object.keys(data.errors).forEach(key => {
+//                        const input = form.querySelector(`[name="${key}"]`)
+//                        if (input) {
+                            
+//                        }
+
+
+//                        const span = form.querySelector(`span[data-valmsg-for="${key}"]`)
+//                        if (span) {
+//                            span.innerText = data.errors[key].join('\n')
+//                        } 
+//                    })
+//                }
+//            } 
+
+//        }
+//        catch (error) {
+//            console.error('Error:', error)
+//        }
+//    })
+//}
+
+
+
+// CLIENT MANAGEMENT MODAL LOGIC, made with the help of GPT. Better UX than a seperate page in my opinion.
 
 const input = document.getElementById("client-name-input");
 const suggestions = document.getElementById("client-suggestions");

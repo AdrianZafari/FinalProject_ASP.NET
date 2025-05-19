@@ -460,6 +460,7 @@ html, body {
             color: var(--navlink-text-color);
             border: 1px solid var(--navlink-border-color);
             padding: 1rem 1.5rem;
+            width: 100%;
             border-radius: var(--border-radius);
             text-decoration: none;
             font-size: 1em;
@@ -1542,7 +1543,7 @@ textarea,
             width: 30px;
             height: 30px;
             overflow: hidden;
-            border-radius: var(--border-radius);
+            border-radius: 50%;
         }
 
             #projects .project.card .members .user-image img {
@@ -1604,7 +1605,7 @@ textarea,
                 width: 150px;
                 height: 150px;
                 overflow: hidden;
-                border-radius: var(--border-radius);
+                border-radius: 50%;
                 margin-bottom: 5%;
             }
 

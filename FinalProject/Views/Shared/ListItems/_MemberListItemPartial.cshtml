@@ -3,28 +3,43 @@
 @* It's worth noting that the "data-project-id" should be incremented so the dropdowns works as they should. 
     Possibly, it can be changed to  "data-member-id"*@
 
-<div class="member card" data-project-id="@Model.MemberId">
+<div class="member card" data-project-id="@Model.Id">
     <div class="card-header">
         <div id="project-actions-container">
-            <button type="button" data-type="dropdown" data-target="#project-dropdown-@Model.MemberId" class="btn-action">
+            <button type="button" data-type="dropdown" data-target="#project-dropdown-@Model.Id" class="btn-action">
                 <i class="fa-solid fa-ellipsis" style="color: #465672"></i>
             </button>
-            <div id="project-dropdown-@Model.MemberId" class="dropdown ">
-                <div class="dropdown-body">
-                    <nav class="dropdown-actions">
-                        <button data-type="modal" data-target="#edit-member-modal" class="dropdown-action">
+            <div class="dropdown dropdown-body" id="project-dropdown-@Model.Id">
+                <nav class="dropdown-actions">
+                    <form action="/admin/members/edit/@Model.Id" method="post" class="inline-form">
+                        <button type="button"
+                                data-type="modal"
+                                data-target="#edit-member-modal"
+                                class="dropdown-action"
+                                data-id="@Model.Id"
+                                data-firstname="@Model.FirstName"
+                                data-lastname="@Model.LastName"
+                                data-email="@Model.Email"
+                                data-phonenumber="@Model.PhoneNumber"
+                                data-jobtitle="@Model.JobTitle"
+                                data-address="@Model.Address"
+                                data-dob="@Model.DateOfBirth?.ToString("yyyy-MM-dd")"
+                                data-image="@Model.MemberImage">
                             <i class="fa-solid fa-edit"></i>
                             <span>Edit</span>
                         </button>
-                    </nav>
-                    <div class="divider"></div>
-                    <nav class="dropdown-actions">
-                        <a class="dropdown-action remove" href="#">
+                    </form>
+                </nav>
+                <div class="divider"></div>
+                <nav class="dropdown-actions">
+                    <form action="/admin/members/delete/@Model.Id" method="post" class="inline-form">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="dropdown-action remove" onclick="return confirm('Are you sure you want to delete this member?');">
                             <i class="fa-solid fa-trash"></i>
                             <span>Delete Member</span>
-                        </a>
-                    </nav>
-                </div>
+                        </button>
+                    </form>
+                </nav>
             </div>
         </div>
     </div>
@@ -41,3 +56,40 @@
         </div>
     </div>
 </div>
+
+
+
+<!-- The form population was done with GPT
+-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editButtons = document.querySelectorAll("[data-type='modal'][data-target='#edit-member-modal']");
+
+        editButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const modal = document.querySelector("#edit-member-modal");
+                if (!modal) return;
+
+                // Populate form fields
+                modal.querySelector("input[name='Id']").value = this.dataset.id || "";
+                modal.querySelector("input[name='FirstName']").value = this.dataset.firstname || "";
+                modal.querySelector("input[name='LastName']").value = this.dataset.lastname || "";
+                modal.querySelector("input[name='Email']").value = this.dataset.email || "";
+                modal.querySelector("input[name='PhoneNumber']").value = this.dataset.phonenumber || "";
+                modal.querySelector("input[name='JobTitle']").value = this.dataset.jobtitle || "";
+                modal.querySelector("input[name='Address']").value = this.dataset.address || "";
+                modal.querySelector("input[name='DateOfBirth']").value = this.dataset.dob || "";
+
+                // Set profile image preview
+                const imagePreview = modal.querySelector("#edit-image-preview");
+                if (this.dataset.image) {
+                    imagePreview.src = this.dataset.image;
+                    imagePreview.classList.remove("hide");
+                } else {
+                    imagePreview.src = "#";
+                    imagePreview.classList.add("hide");
+                }
+            });
+        });
+    });
+</script>

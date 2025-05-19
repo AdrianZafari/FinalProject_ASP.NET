@@ -5,10 +5,10 @@ namespace FinalProject.Models;
 
 public class ProjectViewModel
 {
-    public string ProjectId { get; set; } = Guid.NewGuid().ToString();
+    public string ProjectId { get; set; } = string.Empty;
 
     [Required]
-    [RegularExpression(@"^.+\.(jpg|jpeg|png|gif)$", ErrorMessage = "Please upload a valid image file.")]
+
     public string ProjectImage { get; set; } = null!;
 
     [Required]

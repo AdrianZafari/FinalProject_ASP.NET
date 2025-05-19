@@ -1,6 +1,5 @@
 ﻿@model EditMemberViewModel
 
-
 <section id="edit-member-modal" class="modal">
     <div class="card">
         <div class="card-header">
@@ -9,57 +8,110 @@
         </div>
         <div class="card-body">
 
-            <form asp-controller="" asp-action="" method="post" enctype="multipart/form-data" novalidate>
+            <div id="edit-errors">
+                @* Errors injected by JavaScript or ModelState will show here *@
+            </div>
+
+            <form asp-controller="Members" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" novalidate>
+
+                @* Include the ID of the member being edited *@
+                <input type="hidden" name="Id" value="@Model.Id" />
+
                 <div class="form-group">
                     <div id="edit-upload-trigger" class="image-preview-container user-image">
-                        <img id="edit-image-preview" src="#" alt="edit image preview" class="hide">
+                        <img id="edit-image-preview" src="@Model.MemberImage" alt="edit image preview" class="hide" )">
                         <div id="edit-image-preview-icon-container" class="circle circle-gray">
                             <i id="edit-image-preview-icon" class="fa-solid fa-camera"></i>
                         </div>
                     </div>
-                    <input type="file" id="edit-image-upload" accept="image/*">
+                    <input name="MemberImage" type="file" id="edit-image-upload" accept="image/*">
+                    <span asp-validation-for="MemberImage" class="text-danger"></span>
                 </div>
 
                 <div class="form-horizontal-group">
                     <div class="form-group">
-                        <label class="form-label">First Name</label>
-                        <input type="text" class="form-input">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-input" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Last Name</label>
-                        <input type="text" class="form-input">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-input" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="text" class="form-input">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-input" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Phone</label>
-                    <input type="text" class="form-input">
+                    <label asp-for="PhoneNumber" class="form-label"></label>
+                    <input asp-for="PhoneNumber" class="form-input" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Job Title</label>
-                    <input type="text" class="form-input">
+                    <label asp-for="JobTitle" class="form-label"></label>
+                    <input asp-for="JobTitle" class="form-input" />
+                    <span asp-validation-for="JobTitle" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Address</label>
-                    <input type="text" class="form-input">
+                    <label asp-for="Address" class="form-label"></label>
+                    <input asp-for="Address" class="form-input" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Date of Birth</label>
-                    <input type="date" class="form-input">
+                    <label asp-for="DateOfBirth" class="form-label"></label>
+                    <input asp-for="DateOfBirth" type="date" class="form-input" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                 </div>
 
+                <button type="submit" class="btn">Save</button>
             </form>
-
-            <button type="submit" class="btn">Save</button>
-
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editButtons = document.querySelectorAll("[data-type='modal'][data-target='#edit-member-modal']");
+
+        editButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const modal = document.querySelector("#edit-member-modal");
+                if (!modal) return;
+
+                // Populate form fields
+                modal.querySelector("input[name='Id']").value = this.dataset.id || "";
+                modal.querySelector("input[name='FirstName']").value = this.dataset.firstname || "";
+                modal.querySelector("input[name='LastName']").value = this.dataset.lastname || "";
+                modal.querySelector("input[name='Email']").value = this.dataset.email || "";
+                modal.querySelector("input[name='PhoneNumber']").value = this.dataset.phonenumber || "";
+                modal.querySelector("input[name='JobTitle']").value = this.dataset.jobtitle || "";
+                modal.querySelector("input[name='Address']").value = this.dataset.address || "";
+                modal.querySelector("input[name='DateOfBirth']").value = this.dataset.dob || "";
+
+                // Set profile image preview
+                const imagePreview = modal.querySelector("#edit-image-preview");
+                if (this.dataset.image) {
+                    imagePreview.src = this.dataset.image;
+                    imagePreview.classList.remove("hide");
+                } else {
+                    imagePreview.src = "#";
+                    imagePreview.classList.add("hide");
+                }
+
+                // Update form action URL to /admin/members/edit/{id}
+                const form = modal.querySelector("form");
+                if (form) {
+                    form.action = `/admin/members/edit/${this.dataset.id}`;
+                }
+            });
+        });
+    });
+</script>

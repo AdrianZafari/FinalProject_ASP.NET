@@ -4,6 +4,7 @@ using Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250517203317_cleaned up User, added Member entity")]
+    partial class cleanedupUseraddedMemberentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,44 +40,6 @@ namespace Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Clients");
-                });
-
-            modelBuilder.Entity("Data.Entities.MemberEntity", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JobTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MemberImage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Members");
                 });
 
             modelBuilder.Entity("Data.Entities.ProjectEntity", b =>
@@ -101,9 +66,6 @@ namespace Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("date");
 
-                    b.Property<string>("MemberEntityId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ProjectImage")
                         .HasColumnType("nvarchar(max)");
 
@@ -124,8 +86,6 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("MemberEntityId");
 
                     b.HasIndex("StatusId");
 
@@ -369,10 +329,6 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.Entities.MemberEntity", null)
-                        .WithMany("Projects")
-                        .HasForeignKey("MemberEntityId");
-
                     b.HasOne("Data.Entities.StatusEntity", "Status")
                         .WithMany("Projects")
                         .HasForeignKey("StatusId")
@@ -444,11 +400,6 @@ namespace Data.Migrations
                 });
 
             modelBuilder.Entity("Data.Entities.ClientEntity", b =>
-                {
-                    b.Navigation("Projects");
-                });
-
-            modelBuilder.Entity("Data.Entities.MemberEntity", b =>
                 {
                     b.Navigation("Projects");
                 });

@@ -15,8 +15,10 @@ public interface IUserService
 {
     Task<UserResult> AddUserToRole(string userId, string roleName);
     Task<UserResult> CreateUserAsync(SignUpFormData formData, string roleName = "User");
+    Task<UserResult> DeleteUserAsync(string userId);
     Task<UserResult<AddUserFormData>> GetUserAsync(string userId);
     Task<UserResult<IEnumerable<AddUserFormData>>> GetUsersAsync();
+    Task<UserResult> UpdateUserAsync(string userId, AddUserFormData updatedData);
 }
 
 public class UserService(IUserRepository userRepository, UserManager<UserEntity> userManager, RoleManager<IdentityRole> roleManager) : IUserService
@@ -35,11 +37,7 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
             FirstName = user.FirstName ?? "",
             LastName = user.LastName ?? "",
             Email = user.Email ?? "",
-            PhoneNumber = user.PhoneNumber ?? "",
-            JobTitle = user.JobTitle ?? "",
-            Address = user.Address ?? "",
-            DateOfBirth = user.DateOfBirth ?? default,
-            UserImage = user.UserImage ?? ""
+            JobTitle = user.JobTitle ?? ""
         });
 
         return users.Succeeded
@@ -57,11 +55,7 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
                 FirstName = u.FirstName!,
                 LastName = u.LastName!,
                 Email = u.Email!,
-                PhoneNumber = u.PhoneNumber!,
                 JobTitle = u.JobTitle!,
-                Address = u.Address!,
-                DateOfBirth = u.DateOfBirth!,
-                UserImage = u.UserImage!
             })
             .FirstOrDefaultAsync();
 
@@ -131,4 +125,37 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
             return new UserResult { Succeeded = false, StatusCode = 500, Error = "An error occurred while creating the user." };
         }
     }
+
+    public async Task<UserResult> UpdateUserAsync(string userId, AddUserFormData updatedData)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+            return new UserResult { Succeeded = false, StatusCode = 404, Error = "User not found." };
+
+        // Update fields
+        user.FirstName = updatedData.FirstName;
+        user.LastName = updatedData.LastName;
+        user.Email = updatedData.Email;
+        user.UserName = updatedData.Email;
+        user.JobTitle = updatedData.JobTitle;
+
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded
+            ? new UserResult { Succeeded = true, StatusCode = 200 }
+            : new UserResult { Succeeded = false, StatusCode = 500, Error = "Failed to update user." };
+    }
+
+    public async Task<UserResult> DeleteUserAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+            return new UserResult { Succeeded = false, StatusCode = 404, Error = "User not found." };
+
+        var result = await _userManager.DeleteAsync(user);
+        return result.Succeeded
+            ? new UserResult { Succeeded = true, StatusCode = 200 }
+            : new UserResult { Succeeded = false, StatusCode = 500, Error = "Failed to delete user." };
+    }
+
+
 }
