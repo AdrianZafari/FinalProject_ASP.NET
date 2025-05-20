@@ -24,10 +24,13 @@
             </nav>
             <div class="divider"></div>
             <nav class="dropdown-actions">
-                <a class="dropdown-action" href="#">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Logout</span>
-                </a>
+                <form asp-controller="Auth" asp-action="Logout" method="post">
+                    <button type="submit" class="dropdown-action">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </button>
+                    @Html.AntiForgeryToken()
+                </form>
             </nav>
         </div>
     </div>

@@ -12,7 +12,7 @@ public interface IMemberService
 {
     Task<MemberResult> CreateAsync(AddMemberFormData member);
     Task<MemberResult> DeleteAsync(string id);
-    Task<MemberResult<IEnumerable<Member>>> GetAllAsync(); 
+    Task<MemberResult<IEnumerable<Member>>> GetAllAsync(string userId); 
     Task<MemberResult<Member>> GetByIdAsync(string id);    
     Task<MemberResult> UpdateAsync(string id, AddMemberFormData updatedMember);
 }
@@ -21,9 +21,11 @@ public class MemberService(IMemberRepository memberRepository) : IMemberService
 {
     private readonly IMemberRepository _memberRepository = memberRepository;
 
-    public async Task<MemberResult<IEnumerable<Member>>> GetAllAsync()
+    public async Task<MemberResult<IEnumerable<Member>>> GetAllAsync(string userId)
     {
-        var result = await _memberRepository.GetAllAsync();
+        var result = await _memberRepository.GetAllAsync(
+            where: m => m.UserId == userId
+        );
 
         if (!result.Succeeded || result.Result == null)
         {
@@ -35,7 +37,19 @@ public class MemberService(IMemberRepository memberRepository) : IMemberService
             };
         }
 
-        var members = result.Result.Select(m => m.MapTo<Member>());
+        var members = result.Result.Select(m => new Member // I could use the MapTo, but this is not only more readable, but also easier SIGNIFICANTLY EAISER for debugging.
+        {
+            Id = m.Id,
+            FirstName = m.FirstName,
+            LastName = m.LastName,
+            Email = m.Email,
+            PhoneNumber = m.PhoneNumber,
+            JobTitle = m.JobTitle,
+            Address = m.Address,
+            DateOfBirth = m.DateOfBirth,
+            MemberImage = m.MemberImage
+        });
+
         return new MemberResult<IEnumerable<Member>>
         {
             Succeeded = true,
@@ -43,6 +57,8 @@ public class MemberService(IMemberRepository memberRepository) : IMemberService
             Result = members
         };
     }
+
+
 
     public async Task<MemberResult<Member>> GetByIdAsync(string id)
     {

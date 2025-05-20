@@ -49,9 +49,9 @@ public class ProjectService(IProjectRepository projectRepository, IStatusService
                 orderByDescending: true,
                 sortBy: x => x.Created,
                 where: null,
-                include => include.User,
-                include => include.Status,
-                include => include.Client
+                include => include.User!,
+                include => include.Member!,
+                include => include.Status!
             );
 
         return new ProjectResult<IEnumerable<Project>> { Succeeded = true, StatusCode = 200, Result = response.Result };
@@ -62,9 +62,9 @@ public class ProjectService(IProjectRepository projectRepository, IStatusService
         var response = await _projectRepository.GetAsync
             (
                 where: x => x.Id == id,
-                include => include.User,
-                include => include.Status,
-                include => include.Client
+                include => include.User!,
+                include => include.Member!,
+                include => include.Status!
             );
         return response.Succeeded
             ? new ProjectResult<Project> { Succeeded = true, StatusCode = 200, Result = response.Result }
@@ -104,7 +104,7 @@ public class ProjectService(IProjectRepository projectRepository, IStatusService
             };
         }
 
-        var getResult = await _projectRepository.GetAsync(x => x.Id == id);
+        var getResult = await _projectRepository.GetEntityAsync(x => x.Id == id);
 
         if (!getResult.Succeeded || getResult.Result == null)
         {
@@ -116,7 +116,7 @@ public class ProjectService(IProjectRepository projectRepository, IStatusService
             };
         }
 
-        var existingEntity = getResult.Result.MapTo<ProjectEntity>();
+        var existingEntity = getResult.Result;
 
         existingEntity.ProjectName = formData.ProjectName;
         existingEntity.ProjectImage = formData.ProjectImage;
@@ -124,8 +124,8 @@ public class ProjectService(IProjectRepository projectRepository, IStatusService
         existingEntity.StartDate = formData.StartDate;
         existingEntity.EndDate = formData.EndDate;
         existingEntity.Budget = formData.Budget;
-        existingEntity.ClientId = formData.ClientId;
-        existingEntity.UserId = formData.UserId;
+        existingEntity.ClientName = formData.ClientName;
+        existingEntity.MemberId = formData.MemberId;
         existingEntity.StatusId = formData.StatusId;
 
         var updateResult = await _projectRepository.UpdateAsync(existingEntity);

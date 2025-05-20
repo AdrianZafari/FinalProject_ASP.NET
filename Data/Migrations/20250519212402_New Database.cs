@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class NewDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -63,6 +63,25 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Clients", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Members",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    JobTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    MemberImage = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Members", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -197,23 +216,22 @@ namespace Data.Migrations
                     EndDate = table.Column<DateTime>(type: "date", nullable: true),
                     Budget = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Created = table.Column<DateTime>(type: "date", nullable: false),
-                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    StatusId = table.Column<int>(type: "int", nullable: false)
+                    MemberId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StatusId = table.Column<int>(type: "int", nullable: false),
+                    UserEntityId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Projects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Projects_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Projects_AspNetUsers_UserEntityId",
+                        column: x => x.UserEntityId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Projects_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
+                        name: "FK_Projects_Members_MemberId",
+                        column: x => x.MemberId,
+                        principalTable: "Members",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -270,9 +288,9 @@ namespace Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_ClientId",
+                name: "IX_Projects_MemberId",
                 table: "Projects",
-                column: "ClientId");
+                column: "MemberId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_StatusId",
@@ -280,9 +298,9 @@ namespace Data.Migrations
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_UserId",
+                name: "IX_Projects_UserEntityId",
                 table: "Projects",
-                column: "UserId");
+                column: "UserEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Statuses_StatusName",
@@ -310,6 +328,9 @@ namespace Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Clients");
+
+            migrationBuilder.DropTable(
                 name: "Projects");
 
             migrationBuilder.DropTable(
@@ -319,7 +340,7 @@ namespace Data.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Clients");
+                name: "Members");
 
             migrationBuilder.DropTable(
                 name: "Statuses");

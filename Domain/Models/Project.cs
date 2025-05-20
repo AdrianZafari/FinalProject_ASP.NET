@@ -10,7 +10,8 @@ public class Project
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public decimal? Budget { get; set; }
-    public Client Client { get; set; } = null!;
-    public User User { get; set; } = null!;
+
+    //public Client Client { get; set; } = null!;
+    public Member Member { get; set; } = null!;
     public Status Status { get; set; } = null!;
 }

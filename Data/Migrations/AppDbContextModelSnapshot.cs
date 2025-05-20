@@ -72,7 +72,12 @@ namespace Data.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Members");
                 });
@@ -84,10 +89,6 @@ namespace Data.Migrations
 
                     b.Property<decimal?>("Budget")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ClientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClientName")
                         .HasColumnType("nvarchar(max)");
@@ -101,7 +102,7 @@ namespace Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("date");
 
-                    b.Property<string>("MemberEntityId")
+                    b.Property<string>("MemberId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProjectImage")
@@ -114,18 +115,15 @@ namespace Data.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("StatusId")
+                    b.Property<int?>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("MemberEntityId");
+                    b.HasIndex("MemberId");
 
                     b.HasIndex("StatusId");
 
@@ -361,31 +359,30 @@ namespace Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Data.Entities.MemberEntity", b =>
+                {
+                    b.HasOne("Data.Entities.UserEntity", "User")
+                        .WithMany("Members")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Data.Entities.ProjectEntity", b =>
                 {
-                    b.HasOne("Data.Entities.ClientEntity", "Client")
+                    b.HasOne("Data.Entities.MemberEntity", "Member")
                         .WithMany("Projects")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Data.Entities.MemberEntity", null)
-                        .WithMany("Projects")
-                        .HasForeignKey("MemberEntityId");
+                        .HasForeignKey("MemberId");
 
                     b.HasOne("Data.Entities.StatusEntity", "Status")
                         .WithMany("Projects")
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StatusId");
 
                     b.HasOne("Data.Entities.UserEntity", "User")
                         .WithMany("Projects")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("Client");
+                    b.Navigation("Member");
 
                     b.Navigation("Status");
 
@@ -443,11 +440,6 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Data.Entities.ClientEntity", b =>
-                {
-                    b.Navigation("Projects");
-                });
-
             modelBuilder.Entity("Data.Entities.MemberEntity", b =>
                 {
                     b.Navigation("Projects");
@@ -460,6 +452,8 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.UserEntity", b =>
                 {
+                    b.Navigation("Members");
+
                     b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618

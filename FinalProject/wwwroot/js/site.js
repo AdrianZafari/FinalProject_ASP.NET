@@ -1,4 +1,4 @@
-﻿// ADD MEMBER MODAL LOGIC
+﻿// FORM VALIDATION LOGIC
 
 //const forms = document.querySelectorAll('form')
 //forms.forEach(form => {
@@ -44,57 +44,51 @@
 
 
 
-// CLIENT MANAGEMENT MODAL LOGIC, made with the help of GPT. Better UX than a seperate page in my opinion.
+// CLIENT MANAGEMENT MODAL LOGIC, made with the help of GPT. Better UX than a seperate page in my opinion given the (smaller) scope of what I'm doing here.
 
-const input = document.getElementById("client-name-input");
-const suggestions = document.getElementById("client-suggestions");
-const hiddenField = document.getElementById("selected-client");
+//const input = document.getElementById("client-name-input");
+//const suggestions = document.getElementById("client-suggestions");
 
-if (input && suggestions && hiddenField) {
-    const existingClients = ["Acme Corp", "Beta LLC", "Cyber Industries"]; // ideally from the server (to be added)
+//if (input && suggestions) {
+//    input.addEventListener("input", () => {
+//        const query = input.value.trim().toLowerCase();
+//        suggestions.innerHTML = "";
 
-    input.addEventListener("input", () => {
-        const query = input.value.trim().toLowerCase();
-        suggestions.innerHTML = "";
+//        if (query.length === 0) {
+//            suggestions.classList.add("hide");
+//            return;
+//        }
 
-        if (query.length === 0) {
-            suggestions.classList.add("hide");
-            return;
-        }
+//        const filtered = existingClients.filter(c => c.toLowerCase().includes(query));
+//        if (filtered.length > 0) {
+//            filtered.forEach(client => {
+//                const li = document.createElement("li");
+//                li.textContent = client;
+//                li.onclick = () => {
+//                    input.value = client;
+//                    suggestions.classList.add("hide");
+//                };
+//                suggestions.appendChild(li);
+//            });
+//        } else {
+//            const li = document.createElement("li");
+//            li.textContent = `Add new client: "${input.value}"`;
+//            li.style.fontStyle = "italic";
+//            li.onclick = () => {
+//                suggestions.classList.add("hide");
+//            };
+//            suggestions.appendChild(li);
+//        }
 
-        const filtered = existingClients.filter(c => c.toLowerCase().includes(query));
-        if (filtered.length > 0) {
-            filtered.forEach(client => {
-                const li = document.createElement("li");
-                li.textContent = client;
-                li.onclick = () => {
-                    input.value = client;
-                    hiddenField.value = client;
-                    suggestions.classList.add("hide");
-                };
-                suggestions.appendChild(li);
-            });
-        } else {
-            const li = document.createElement("li");
-            li.textContent = `Add new client: "${input.value}"`;
-            li.style.fontStyle = "italic";
-            li.onclick = () => {
-                hiddenField.value = input.value.trim();
-                suggestions.classList.add("hide");
-            };
-            suggestions.appendChild(li);
-        }
+//        suggestions.classList.remove("hide");
+//    });
 
-        suggestions.classList.remove("hide");
-    });
-
-    document.addEventListener("click", (e) => {
-        if (!input.contains(e.target) && !suggestions.contains(e.target)) {
-            suggestions.classList.add("hide");
-        }
-    });
-}
-
+//    document.addEventListener("click", (e) => {
+//        if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+//            suggestions.classList.add("hide");
+//        }
+//    });
+//}
 
 
 // DARK MODE TOGGLE, made with GPT
@@ -102,6 +96,8 @@ if (input && suggestions && hiddenField) {
 document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.getElementById('darkModeToggle');
     const darkClass = 'dark';
+
+    if (!toggle) return; 
 
     if (localStorage.getItem('theme') === 'dark') {
         document.documentElement.classList.add(darkClass);

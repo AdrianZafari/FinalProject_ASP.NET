@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities;
 
@@ -27,6 +29,12 @@ public class MemberEntity
     public DateTime? DateOfBirth { get; set; }
 
     public string? MemberImage { get; set; }
+
+    // Foreign Keys
+
+    [ForeignKey(nameof(User))]
+    public string? UserId { get; set; } = null!;
+    public virtual UserEntity? User { get; set; } = null!;
 
     public virtual ICollection<ProjectEntity> Projects { get; set; } = [];
 }

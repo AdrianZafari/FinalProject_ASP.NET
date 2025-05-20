@@ -2,6 +2,7 @@
 using Business.Services;
 using Domain.Extensions;
 using FinalProject.Models;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinalProject.Controllers;
@@ -12,11 +13,11 @@ public class MembersController(IMemberService memberService) : Controller
     private readonly IMemberService _memberService = memberService;
 
 
-
     [HttpGet("")]
     public async Task<IActionResult> Index()
     {
-        var result = await _memberService.GetAllAsync();
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var result = await _memberService.GetAllAsync(userId!);
         var members = result.Succeeded && result.Result != null
             ? result.Result.Select(member =>
             {
@@ -84,8 +85,9 @@ public class MembersController(IMemberService memberService) : Controller
         {
             imagePath = "/images/users/user-template-male-green.svg"; // Default image path if no image is uploaded
         }
-
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get the ID of the logged-in user
         var formData = model.MapTo<AddMemberFormData>();
+        formData.UserId = userId;
         formData.MemberImage = imagePath; // Set the saved image path
 
 

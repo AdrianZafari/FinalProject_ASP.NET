@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250517203317_cleaned up User, added Member entity")]
-    partial class cleanedupUseraddedMemberentity
+    [Migration("20250519212402_New Database")]
+    partial class NewDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,6 +42,44 @@ namespace Data.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("Data.Entities.MemberEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JobTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MemberImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Members");
+                });
+
             modelBuilder.Entity("Data.Entities.ProjectEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -49,10 +87,6 @@ namespace Data.Migrations
 
                     b.Property<decimal?>("Budget")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ClientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClientName")
                         .HasColumnType("nvarchar(max)");
@@ -65,6 +99,10 @@ namespace Data.Migrations
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("date");
+
+                    b.Property<string>("MemberId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProjectImage")
                         .HasColumnType("nvarchar(max)");
@@ -79,17 +117,16 @@ namespace Data.Migrations
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
+                    b.Property<string>("UserEntityId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("MemberId");
 
                     b.HasIndex("StatusId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserEntityId");
 
                     b.ToTable("Projects");
                 });
@@ -323,9 +360,9 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.ProjectEntity", b =>
                 {
-                    b.HasOne("Data.Entities.ClientEntity", "Client")
+                    b.HasOne("Data.Entities.MemberEntity", "Member")
                         .WithMany("Projects")
-                        .HasForeignKey("ClientId")
+                        .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -335,17 +372,13 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.Entities.UserEntity", "User")
+                    b.HasOne("Data.Entities.UserEntity", null)
                         .WithMany("Projects")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserEntityId");
 
-                    b.Navigation("Client");
+                    b.Navigation("Member");
 
                     b.Navigation("Status");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -399,7 +432,7 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Data.Entities.ClientEntity", b =>
+            modelBuilder.Entity("Data.Entities.MemberEntity", b =>
                 {
                     b.Navigation("Projects");
                 });

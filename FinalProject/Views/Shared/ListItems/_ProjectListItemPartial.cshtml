@@ -45,9 +45,18 @@
             <span>5 days left</span>
         </div>
         <div class="members">
-            <div class="user-image">
-                <img src="@Model.Members.First()" alt="template user">
-            </div>
+            @if (Model.Members.Any())
+            {
+                <div class="user-image">
+                    <img src="@Model.Members.First().MemberImage" alt="project member" />
+                </div>
+            }
+            else
+            {
+                <div class="user-image">
+                    <img src="/images/users/user-template-male-green.svg" alt="no member" />
+                </div>
+            }
         </div>
     </div>
 </div>

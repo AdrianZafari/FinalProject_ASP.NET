@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250516142539_Init")]
-    partial class Init
+    [Migration("20250520000747_fixed minor errors with foreign key references")]
+    partial class fixedminorerrorswithforeignkeyreferences
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,6 +42,49 @@ namespace Data.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("Data.Entities.MemberEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JobTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MemberImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Members");
+                });
+
             modelBuilder.Entity("Data.Entities.ProjectEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -49,10 +92,6 @@ namespace Data.Migrations
 
                     b.Property<decimal?>("Budget")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ClientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClientName")
                         .HasColumnType("nvarchar(max)");
@@ -66,6 +105,9 @@ namespace Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("date");
 
+                    b.Property<string>("MemberId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("ProjectImage")
                         .HasColumnType("nvarchar(max)");
 
@@ -76,20 +118,19 @@ namespace Data.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("StatusId")
+                    b.Property<int?>("StatusId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
+                    b.Property<string>("UserEntityId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
+                    b.HasIndex("MemberId");
 
                     b.HasIndex("StatusId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserEntityId");
 
                     b.ToTable("Projects");
                 });
@@ -321,31 +362,32 @@ namespace Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Data.Entities.MemberEntity", b =>
+                {
+                    b.HasOne("Data.Entities.UserEntity", "User")
+                        .WithMany("Members")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Data.Entities.ProjectEntity", b =>
                 {
-                    b.HasOne("Data.Entities.ClientEntity", "Client")
+                    b.HasOne("Data.Entities.MemberEntity", "Member")
                         .WithMany("Projects")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MemberId");
 
                     b.HasOne("Data.Entities.StatusEntity", "Status")
                         .WithMany("Projects")
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StatusId");
 
-                    b.HasOne("Data.Entities.UserEntity", "User")
+                    b.HasOne("Data.Entities.UserEntity", null)
                         .WithMany("Projects")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserEntityId");
 
-                    b.Navigation("Client");
+                    b.Navigation("Member");
 
                     b.Navigation("Status");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -399,7 +441,7 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Data.Entities.ClientEntity", b =>
+            modelBuilder.Entity("Data.Entities.MemberEntity", b =>
                 {
                     b.Navigation("Projects");
                 });
@@ -411,6 +453,8 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.UserEntity", b =>
                 {
+                    b.Navigation("Members");
+
                     b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618

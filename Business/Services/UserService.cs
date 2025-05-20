@@ -107,6 +107,7 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
         try
         {
             var userEntity = formData.MapTo<UserEntity>();
+            userEntity.UserName = userEntity.Email; // Automapper might as well be letting Jesus take the wheel. Yet more sanity I'm not getting back.
 
             var result = await _userManager.CreateAsync(userEntity, formData.Password);
             if (result.Succeeded)

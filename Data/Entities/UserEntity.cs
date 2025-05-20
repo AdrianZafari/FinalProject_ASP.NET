@@ -13,6 +13,10 @@ public class UserEntity: IdentityUser
     //public DateTime? DateOfBirth { get; set; }
     //public string? UserImage { get; set; }
 
-    public virtual ICollection<ProjectEntity> Projects { get; set; } = [];
+
+    public virtual ICollection<ProjectEntity> Projects { get; set; } = new List<ProjectEntity>();
+
+    public virtual ICollection<MemberEntity> Members { get; set; } = new List<MemberEntity>();
+
 }
 

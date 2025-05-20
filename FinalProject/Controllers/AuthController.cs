@@ -4,6 +4,8 @@ using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Domain.Extensions;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace FinalProject.Controllers;
 
@@ -48,10 +50,10 @@ public class AuthController(IAuthService authService) : Controller
 
     [HttpPost]
     [Route("auth/login")]
-    public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = "~/")
+    public async Task<IActionResult> Login(LoginViewModel model)
     {
         ViewBag.ErrorMessage = null;
-        ViewBag.ReturnUrl = returnUrl;
+        //ViewBag.ReturnUrl = returnUrl;
 
         if (!ModelState.IsValid)
         {
@@ -61,11 +63,31 @@ public class AuthController(IAuthService authService) : Controller
         var result = await _authService.SignInAsync(signInFormData);
         if (result.Succeeded)
         {
-            return RedirectToAction(returnUrl);
+            return RedirectToAction("Index", "Projects");
         }
 
         ViewBag.ErrorMessage = result.Error;
         return View();
     }
 
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Logout()
+    {
+        var result = await _authService.SignOutAsync();
+
+        if (result.Succeeded)
+        {
+            return RedirectToAction("Login", "Auth"); // Or wherever you want to redirect
+        }
+        else
+        {
+            TempData["Error"] = "Logout failed.";
+            return RedirectToAction("Index", "Home");
+        }
+    }
 }
+
+
+
