@@ -44,53 +44,6 @@
 
 
 
-// CLIENT MANAGEMENT MODAL LOGIC, made with the help of GPT. Better UX than a seperate page in my opinion given the (smaller) scope of what I'm doing here.
-
-//const input = document.getElementById("client-name-input");
-//const suggestions = document.getElementById("client-suggestions");
-
-//if (input && suggestions) {
-//    input.addEventListener("input", () => {
-//        const query = input.value.trim().toLowerCase();
-//        suggestions.innerHTML = "";
-
-//        if (query.length === 0) {
-//            suggestions.classList.add("hide");
-//            return;
-//        }
-
-//        const filtered = existingClients.filter(c => c.toLowerCase().includes(query));
-//        if (filtered.length > 0) {
-//            filtered.forEach(client => {
-//                const li = document.createElement("li");
-//                li.textContent = client;
-//                li.onclick = () => {
-//                    input.value = client;
-//                    suggestions.classList.add("hide");
-//                };
-//                suggestions.appendChild(li);
-//            });
-//        } else {
-//            const li = document.createElement("li");
-//            li.textContent = `Add new client: "${input.value}"`;
-//            li.style.fontStyle = "italic";
-//            li.onclick = () => {
-//                suggestions.classList.add("hide");
-//            };
-//            suggestions.appendChild(li);
-//        }
-
-//        suggestions.classList.remove("hide");
-//    });
-
-//    document.addEventListener("click", (e) => {
-//        if (!input.contains(e.target) && !suggestions.contains(e.target)) {
-//            suggestions.classList.add("hide");
-//        }
-//    });
-//}
-
-
 // DARK MODE TOGGLE, made with GPT
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -143,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const editProjectToolbar = document.getElementById('edit-project-description-wysiwyg-toolbar');
 
     if (editProjectDescriptionTextarea && editProjectEditor && editProjectToolbar) {
-        const editProjectDescriptionQuill = new Quill(editProjectEditor, {
+        window.editProjectDescriptionQuill = new Quill(editProjectEditor, {
             modules: {
                 syntax: true,
                 toolbar: editProjectToolbar
@@ -152,8 +105,8 @@ document.addEventListener("DOMContentLoaded", function () {
             placeholder: 'Type something'
         });
 
-        editProjectDescriptionQuill.on('text-change', function () {
-            editProjectDescriptionTextarea.value = editProjectDescriptionQuill.root.innerHTML;
+        window.editProjectDescriptionQuill.on('text-change', function () {
+            editProjectDescriptionTextarea.value = window.editProjectDescriptionQuill.root.innerHTML;
         });
     }
 });

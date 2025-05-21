@@ -12,6 +12,6 @@ public class Project
     public decimal? Budget { get; set; }
 
     //public Client Client { get; set; } = null!;
-    public Member Member { get; set; } = null!;
-    public Status Status { get; set; } = null!;
+    public string? MemberId { get; set; }
+    public int? StatusId { get; set; }
 }

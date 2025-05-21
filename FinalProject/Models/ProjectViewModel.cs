@@ -5,6 +5,9 @@ namespace FinalProject.Models;
 public class ProjectViewModel
 {
     public string ProjectId { get; set; } = string.Empty;
+    public string? MemberId { get; set; }
+    public  string? StatusId { get; set; } 
+
 
     [Required]
     [Display(Name = "Project Image")]
@@ -35,8 +38,8 @@ public class ProjectViewModel
     [Display(Name = "Budget")]
     public decimal? Budget { get; set; } = 0;
 
+    public string? MemberImage { get; set; }
+
     public string TimeLeft { get; set; } = "N/A";
 
-    // Relationship
-    public ICollection<MemberViewModel> Members { get; set; } = new List<MemberViewModel>();
 } 

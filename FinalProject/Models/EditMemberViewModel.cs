@@ -9,12 +9,12 @@ public class EditMemberViewModel
 
     [Required]
     [Display(Name = "First Name")]
-    [RegularExpression(@"^[A-Z][a-zA-Z]{1,49}$", ErrorMessage = "First name must start with a capital letter and be alphabetic.")]
+    [RegularExpression(@"^[A-Z](?:[a-zA-Z]+(?:-[a-zA-Z]+)*)?$", ErrorMessage = "First name must start with a capital letter and be alphabetic.")]
     public string FirstName { get; set; } = null!;
 
     [Required]
     [Display(Name = "Last Name")]
-    [RegularExpression(@"^[A-Z][a-zA-Z]{1,49}$", ErrorMessage = "Last name must start with a capital letter and be alphabetic.")]
+    [RegularExpression(@"^[A-Z](?:[a-zA-Z]+(?:-[a-zA-Z]+)*)?$", ErrorMessage = "Last name must start with a capital letter and be alphabetic.")]
     public string LastName { get; set; } = null!;
 
     [Required]

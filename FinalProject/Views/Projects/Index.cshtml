@@ -12,6 +12,13 @@
         </button>
     </div>
 
+    <div class="project-filters">
+        <button class="filter-btn btn active" data-status="all">All</button>
+        <button class="filter-btn btn" data-status="1">Started</button>
+        <button class="filter-btn btn" data-status="2">Completed</button>
+        <button class="filter-btn btn" data-status="3">Dormant</button>
+    </div>
+
     <section id="project-list" class="project-list">
         @if (Model.Projects != null && Model.Projects.Any())
         {
@@ -26,3 +33,29 @@
 
 @await Html.PartialAsync("Modals/_AddProjectModalPartial", Model.AddProjectFormData)
 @await Html.PartialAsync("Modals/_EditProjectModalPartial", Model.EditProjectFormData)
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const filterButtons = document.querySelectorAll(".filter-btn");
+      const projectItems = document.querySelectorAll(".project.card");
+
+      filterButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          filterButtons.forEach(btn => btn.classList.remove("active"));
+          button.classList.add("active");
+
+          const selectedStatus = button.getAttribute("data-status");
+
+          projectItems.forEach(item => {
+            const itemStatus = item.getAttribute("data-status");
+
+            if (selectedStatus === "all" || itemStatus === selectedStatus) {
+              item.style.display = "";
+            } else {
+              item.style.display = "none";
+            }
+          });
+        });
+      });
+    });
+</script>

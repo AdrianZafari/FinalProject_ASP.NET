@@ -1,6 +1,5 @@
 ﻿@model EditProjectViewModel
 
-
 <section id="edit-project-modal" class="modal">
     <div class="card">
         <div class="card-header">
@@ -8,32 +7,37 @@
             <button data-type="close" data-target="#edit-project-modal" class="btn-close"></button>
         </div>
         <div class="card-body">
+            <form asp-controller="Projects" asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
 
-            <form asp-controller="" asp-action="" method="post" enctype="multipart/form-data" novalidate>
                 <div class="form-group">
                     <div id="edit-upload-trigger" class="image-preview-container project-image">
-                        <img id="edit-image-preview" src="#" alt="edit image preview" class="hide">
+                        <img id="edit-image-preview" src="#" alt="edit image preview" class="hide" />
                         <div id="edit-image-preview-icon-container" class="circle circle-gray">
                             <i id="edit-image-preview-icon" class="fa-solid fa-camera"></i>
                         </div>
                     </div>
-                    <input type="file" id="edit-image-upload" accept="image/*">
+                    <input asp-for="ProjectImage" type="file" id="edit-image-upload" accept="image/*" class="form-input" />
+                    <span asp-validation-for="ProjectImage" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Project Name</label>
-                    <input type="text" class="form-input">
+                    <label asp-for="ProjectName" class="form-label"></label>
+                    <input asp-for="ProjectName" class="form-input" />
+                    <span asp-validation-for="ProjectName" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Client Name</label>
-                    <input type="text" class="form-input">
+                    <label asp-for="ClientName" class="form-label"></label>
+                    <input asp-for="ClientName" class="form-input" />
+                    <span asp-validation-for="ClientName" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Description</label>
+                    <label asp-for="Description" class="form-label"></label>
                     <div class="wysiwyg">
-                        <textarea id="edit-project-description" type="text"></textarea>
+                        <textarea asp-for="Description" id="edit-project-description" class="hide">@Html.Raw(Model.Description)</textarea>
                         <div id="edit-project-description-wysiwyg-editor" class="wysiwyg-editor"></div>
                         <div id="edit-project-description-wysiwyg-toolbar" class="wysiwyg-toolbar">
                             <span class="ql-formats">
@@ -55,21 +59,24 @@
                             </span>
                         </div>
                     </div>
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
                 <div class="form-horizontal-group">
                     <div class="form-group">
-                        <label class="form-label">Start Date</label>
-                        <input type="date" class="form-input">
+                        <label asp-for="StartDate" class="form-label"></label>
+                        <input asp-for="StartDate" type="date" class="form-input" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">End Date</label>
-                        <input type="date" class="form-input">
+                        <label asp-for="EndDate" class="form-label"></label>
+                        <input asp-for="EndDate" type="date" class="form-input" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Member</label>
+                    <label asp-for="MemberId" class="form-label">Member</label>
                     <div class="form-select" data-placeholder="Choose a member">
                         <button type="button" class="form-select-trigger">
                             <span class="form-select-text"></span>
@@ -80,37 +87,129 @@
                                 <li class="form-select-option" data-value="@option.Value">@option.Text</li>
                             }
                         </ul>
-                        <input type="hidden" name="member-select-value">
+                        <input asp-for="MemberId" type="hidden" />
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Budget</label>
+                    <label asp-for="Budget" class="form-label"></label>
                     <div class="form-input-extended">
                         <i class="fa-solid fa-dollar-sign"></i>
-                        <input type="text" class="form-input">
+                        <input asp-for="Budget" class="form-input" />
+                    </div>
+                    <span asp-validation-for="Budget" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="StatusId" class="form-label">Project Status</label>
+                    <div class="form-select" data-placeholder="Choose a status">
+                        <button type="button" class="form-select-trigger">
+                            <span class="form-select-text"></span>
+                        </button>
+                        <ul class="form-select-options">
+                            @foreach (var status in Model.Statuses)
+                            {
+                                <li class="form-select-option" data-value="@status.Value">@status.Text</li>
+                            }
+                        </ul>
+                        <input asp-for="StatusId" type="hidden" />
                     </div>
                 </div>
+
+                <button type="submit" class="btn">Save</button>
             </form>
-
-            <div class="form-group">
-                <label class="form-label">Project Status</label>
-                <div class="form-select" data-placeholder="Choose a status">
-                    <button type="button" class="form-select-trigger">
-                        <span class="form-select-text"></span>
-                    </button>
-                    <ul class="form-select-options">
-                        @foreach (var status in Model.Statuses)
-                        {
-                            <li class="form-select-option" data-value="@status.Value">@status.Text</li>
-                        }
-                    </ul>
-                    <input type="hidden" name="status-select-value" value="1">
-                </div>
-            </div>
-
-            <button type="submit" class="btn">Save</button>
-
         </div>
     </div>
 </section>
+
+<!-- This was done with the help of GPT -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const editButtons = document.querySelectorAll("[data-type='modal'][data-target='#edit-project-modal']");
+
+      editButtons.forEach(button => {
+        button.addEventListener("click", function () {
+          const modal = document.querySelector("#edit-project-modal");
+          if (!modal) return;
+
+          // Fill regular inputs
+          modal.querySelector("input[name='Id']").value = this.dataset.id || "";
+          modal.querySelector("input[name='ProjectName']").value = this.dataset.projectname || "";
+          modal.querySelector("input[name='ClientName']").value = this.dataset.clientname || "";
+          modal.querySelector("input[name='StartDate']").value = this.dataset.startdate || "";
+          modal.querySelector("input[name='EndDate']").value = this.dataset.enddate || "";
+          modal.querySelector("input[name='Budget']").value = this.dataset.budget || "";
+          modal.querySelector("input[name='MemberId']").value = this.dataset.memberid || "";
+          modal.querySelector("input[name='StatusId']").value = this.dataset.statusid || "";
+
+          // Update custom selects
+          const memberText = modal.querySelector(`.form-select-option[data-value='${this.dataset.memberid}']`)?.textContent;
+          modal.querySelector(".form-select[data-placeholder='Choose a member'] .form-select-text").textContent = memberText || "Choose a member";
+
+          const statusText = modal.querySelector(`.form-select-option[data-value='${this.dataset.statusid}']`)?.textContent;
+          modal.querySelector(".form-select[data-placeholder='Choose a status'] .form-select-text").textContent = statusText || "Choose a status";
+
+          // Image preview
+          const imagePreview = modal.querySelector("#edit-image-preview");
+          if (this.dataset.image) {
+            imagePreview.src = this.dataset.image;
+            imagePreview.classList.remove("hide");
+          } else {
+            imagePreview.src = "#";
+            imagePreview.classList.add("hide");
+          }
+
+          // Update Quill editor with HTML description
+            if (window.editProjectDescriptionQuill) {
+                const html = this.dataset.description || "";
+                window.editProjectDescriptionQuill.clipboard.dangerouslyPasteHTML(html);
+            }
+
+
+          // Update hidden textarea to keep in sync for model binding
+          modal.querySelector("textarea#edit-project-description").value = this.dataset.description || "";
+
+          // Update form action URL
+          modal.querySelector("form").action = `/projects/edit/${this.dataset.id}`;
+        });
+      });
+
+      // Keep Quill content synced to hidden textarea on changes
+      if (window.editProjectDescriptionQuill) {
+        window.editProjectDescriptionQuill.on('text-change', function () {
+          const html = window.editProjectDescriptionQuill.root.innerHTML;
+          document.querySelector("textarea#edit-project-description").value = html;
+        });
+      }
+    });
+
+    const form = document.querySelector("#edit-project-modal form");
+    if (form && window.editProjectDescriptionQuill) {
+      form.addEventListener("submit", function () {
+        const html = window.editProjectDescriptionQuill.root.innerHTML;
+        form.querySelector("textarea#edit-project-description").value = html;
+      });
+    }
+
+            // Edit Project Quill Initialization
+       window.editProjectDescriptionTextarea = document.getElementById('edit-project-description');
+       window.editProjectEditor = document.getElementById('edit-project-description-wysiwyg-editor');
+       window.editProjectToolbar = document.getElementById('edit-project-description-wysiwyg-toolbar');
+
+        if (editProjectDescriptionTextarea && editProjectEditor && editProjectToolbar) {
+            window.editProjectDescriptionQuill = new Quill(editProjectEditor, {
+                modules: {
+                    syntax: true,
+                    toolbar: editProjectToolbar
+                },
+                theme: 'snow',
+                placeholder: 'Type something'
+            });
+
+            editProjectDescriptionQuill.on('text-change', function () {
+                editProjectDescriptionTextarea.value = editProjectDescriptionQuill.root.innerHTML;
+            });
+        }
+
+</script>

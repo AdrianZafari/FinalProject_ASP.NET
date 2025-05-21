@@ -5,7 +5,7 @@ namespace FinalProject.Models;
 
 public class AddProjectViewModel
 {
-    [Required]
+
     [Display(Name = "Project Image")]
     public IFormFile? ProjectImage { get; set; }
 
@@ -35,10 +35,11 @@ public class AddProjectViewModel
     public decimal? Budget { get; set; } = 0;
 
     public string TimeLeft { get; set; } = "N/A";
+    public string? MemberId { get; set; }
 
-    public List<string> ExistingClients { get; set; } = new List<string>();
+    //public List<string> ExistingClients { get; set; } = new List<string>();
 
-    //public IEnumerable<SelectListItem> Clients { get; set; } = [];
+
     public IEnumerable<SelectListItem> Members { get; set; } = [];
 
 

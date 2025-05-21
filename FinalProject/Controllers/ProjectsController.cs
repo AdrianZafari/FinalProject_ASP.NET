@@ -1,6 +1,7 @@
 ﻿using Business.DTOs;
 using Business.Services;
 using Domain.Extensions;
+using Domain.Models;
 using FinalProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,17 +9,19 @@ using System.Security.Claims;
 
 namespace FinalProject.Controllers;
 
-public class ProjectsController(IProjectService projectService, IMemberService memberService) : Controller
+[Route("projects")]
+public class ProjectsController(IProjectService projectService, IMemberService memberService, IStatusService statusService) : Controller
 {
+    private readonly IStatusService _statusService = statusService;
     private readonly IMemberService _memberService = memberService;
     private readonly IProjectService _projectService = projectService;
 
-    [Route("/projects")]
+
     public async Task<IActionResult> Index()
     {
         var viewModel = new ProjectsViewModel()
         {
-            Projects = SetProjects(),
+            Projects = await SetProjectsAsync(),
             AddProjectFormData = new AddProjectViewModel
             {
                 Members = await SetMembersAsync()
@@ -26,7 +29,7 @@ public class ProjectsController(IProjectService projectService, IMemberService m
             EditProjectFormData = new EditProjectViewModel
             {
                 Members = await SetMembersAsync(),
-                Statuses = SetStatuses()
+                Statuses = await SetStatuses()
             }
         };
 
@@ -37,6 +40,7 @@ public class ProjectsController(IProjectService projectService, IMemberService m
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(AddProjectViewModel model)
     {
+        
         if (!ModelState.IsValid)
         {
             var errors = ModelState
@@ -73,6 +77,7 @@ public class ProjectsController(IProjectService projectService, IMemberService m
         }
 
         var formData = model.MapTo<AddProjectFormData>();
+        formData.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         formData.ProjectImage = imagePath;
 
         var result = await _projectService.CreateProjectAsync(formData);
@@ -88,78 +93,143 @@ public class ProjectsController(IProjectService projectService, IMemberService m
     }
 
 
-
-
-    [HttpPost]
-    public IActionResult Update(EditProjectViewModel model)
+    [HttpPost("edit/{id}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(string id, EditProjectViewModel model)
     {
-        return View();
+        if (id != model.Id)
+        {
+            ModelState.AddModelError(string.Empty, "Mismatched ID.");
+            return RedirectToAction("Index");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            TempData["ShowEditModal"] = true;
+            TempData["EditErrors"] = ModelState
+                .Where(x => x.Value?.Errors.Count > 0)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage));
+            return RedirectToAction("Index");
+        }
+
+        string? imagePath = null;
+
+        if (model.ProjectImage != null && model.ProjectImage.Length > 0)
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            Directory.CreateDirectory(uploadsFolder);
+
+            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(model.ProjectImage.FileName);
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.ProjectImage.CopyToAsync(stream);
+            }
+
+            imagePath = $"/uploads/{uniqueFileName}";
+        }
+        else
+        {
+            var existing = await _projectService.GetProjectAsync(id);
+            if (existing.Succeeded && existing.Result != null)
+            {
+                imagePath = existing.Result.ProjectImage;
+            }
+        }
+
+        var formData = model.MapTo<AddProjectFormData>();
+        formData.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        formData.ProjectImage = imagePath;
+
+        var result = await _projectService.UpdateProjectAsync(id, formData);
+        if (!result.Succeeded)
+        {
+            TempData["EditErrors"] = new List<string> { result.Error! };
+            TempData["ShowEditModal"] = true;
+            return RedirectToAction("Index");
+        }
+
+        TempData["Success"] = "Project updated.";
+        return RedirectToAction("Index");
     }
-    [HttpDelete]
-    public IActionResult Delete(string id)
+
+
+    // This was made by me with the help of ChatGPT
+    private async Task<IEnumerable<ProjectViewModel>> SetProjectsAsync()
     {
-        return View();
-    }
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var projectResult = await _projectService.GetAllProjectsAsync(userId!);
 
-
-    //private IEnumerable<ProjectViewModel> SetProjects(){
-    //    var projects = new List<ProjectViewModel>();
-
-    //    projects.Add(new ProjectViewModel
-    //    {
-    //        ProjectId = Guid.NewGuid().ToString(),
-    //        ProjectName = "Website Redesign",
-    //        ClientName = "GitLabs Inc.",
-    //        ProjectImage = "/images/projects/project-template-purple.svg",
-    //        Description = "<p>It is <strong>necessary</strong> to develop a website redesign in a corporate style.</p>",
-    //        TimeLeft = "1 week left",
-    //        Members = ["/images/users/user-template-male-green.svg"]
-    //    }); 
-
-    //    return projects;
-    //}
-
-    private IEnumerable<ProjectViewModel> SetProjects()
-    {
-        var projectResult = _projectService.GetProjectsAsync().Result;
         if (!projectResult.Succeeded || projectResult.Result == null)
             return Enumerable.Empty<ProjectViewModel>();
 
-        return projectResult.Result.Select(project => new ProjectViewModel
+        var projects = projectResult.Result;
+
+        // Collect unique MemberIds across projects
+        var memberIds = projects
+            .Select(p => p.MemberId)
+            .Where(id => !string.IsNullOrEmpty(id))
+            .Distinct()
+            .ToList();
+
+        // Prepare member dictionary
+        var memberDict = new Dictionary<string, Member>();
+
+        foreach (var memberId in memberIds)
         {
-            ProjectId = project.Id,
-            ProjectName = project.ProjectName,
-            ClientName = project.ClientName ?? "Unknown Client",
-            Description = project.Description!,
-            ProjectImage = string.IsNullOrEmpty(project.ProjectImage)
-                ? "/images/projects/project-template-purple.svg"
-                : project.ProjectImage,
-            StartDate = project.StartDate,
-            EndDate = project.EndDate,
-            Budget = project.Budget,
-            TimeLeft = project.EndDate.HasValue
-                ? $"{(project.EndDate.Value - DateTime.Now).Days} days left"
-                : "N/A",
-            Members = new List<MemberViewModel>
-        {
-            new MemberViewModel
+            var memberResult = await _memberService.GetByIdAsync(memberId!);
+            if (memberResult.Succeeded && memberResult.Result != null)
             {
-                Id = project.Member?.Id ?? "",
-                FirstName = project.Member?.FirstName ?? "Unknown",
-                LastName = project.Member?.LastName ?? "Member",
-                Email = project.Member?.Email ?? "N/A",
-                PhoneNumber = project.Member?.PhoneNumber ?? "N/A",
-                JobTitle = project.Member?.JobTitle ?? "N/A",
-                Address = project.Member?.Address ?? "N/A",
-                DateOfBirth = project.Member?.DateOfBirth ?? default,
-                MemberImage = string.IsNullOrEmpty(project.Member?.MemberImage)
-                    ? "/images/users/user-template-male-green.svg"
-                    : project.Member.MemberImage
+                memberDict[memberId!] = memberResult.Result;
             }
         }
+
+        return projects.Select(project =>
+        {
+            var member = project.MemberId != null && memberDict.ContainsKey(project.MemberId)
+                ? memberDict[project.MemberId]
+                : null;
+
+            return new ProjectViewModel
+            {
+                ProjectId = project.Id,
+                ProjectName = project.ProjectName,
+                ClientName = project.ClientName ?? "Unknown Client",
+                Description = project.Description!,
+                ProjectImage = string.IsNullOrEmpty(project.ProjectImage)
+                    ? "/images/projects/project-template-purple.svg"
+                    : project.ProjectImage,
+                StartDate = project.StartDate,
+                EndDate = project.EndDate,
+                Budget = project.Budget,
+                TimeLeft = project.EndDate.HasValue
+                    ? $"{(project.EndDate.Value - DateTime.Now).Days} days left"
+                    : "N/A",
+                MemberId = project.MemberId,
+                StatusId = project.StatusId?.ToString(),
+                MemberImage = member?.MemberImage ?? "/images/users/user-template-male-green.svg"
+            };
         });
     }
 
+    [HttpPost("delete/{id}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(string id)
+    {
+        var result = await _projectService.DeleteProjectAsync(id);
+
+        if (!result.Succeeded)
+        {
+            TempData["Error"] = result.Error;
+        }
+        else
+        {
+            TempData["Success"] = "Project deleted.";
+        }
+
+        return RedirectToAction("Index");
+    }
 
 
 
@@ -180,13 +250,18 @@ public class ProjectsController(IProjectService projectService, IMemberService m
         });
     }
 
-    private IEnumerable<SelectListItem> SetStatuses()
+    private async Task<IEnumerable<SelectListItem>> SetStatuses()
     {
-        var statuses = new List<SelectListItem> {
-            new() { Value = "1", Text = "STARTED", Selected = true},
-            new() { Value = "2", Text = "COMPLETED" }
-        };
+        var result = await _statusService.GetStatusesAsync();
 
-        return statuses;
+        if (!result.Succeeded || result.Result == null)
+            return Enumerable.Empty<SelectListItem>();
+
+
+        return result.Result.Select(s => new SelectListItem
+        {
+            Value = s.Id.ToString(),
+            Text = s.StatusName
+        });
     }
 }

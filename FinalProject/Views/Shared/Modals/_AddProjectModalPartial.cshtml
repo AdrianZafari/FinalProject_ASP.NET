@@ -8,7 +8,7 @@
         </div>
         <div class="card-body">
 
-            <form asp-controller="Project" asp-action="Create" method="post" enctype="multipart/form-data" novalidate>
+            <form asp-controller="Projects" asp-action="Create" method="post" enctype="multipart/form-data" novalidate>
                 @Html.AntiForgeryToken()
 
                 <div class="form-group">
@@ -76,7 +76,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Member</label>
+                    <label asp-for="MemberId" class="form-label">Member</label>
                     <div class="form-select" data-placeholder="Choose a member">
                         <button type="button" class="form-select-trigger">
                             <span class="form-select-text"></span>
@@ -87,7 +87,7 @@
                                 <li class="form-select-option" data-value="@option.Value">@option.Text</li>
                             }
                         </ul>
-                        <input type="hidden" name="SelectedMember" />
+                        <input asp-for="MemberId" type="hidden" />
                     </div>
                 </div>
 
@@ -108,6 +108,3 @@
 </section>
 
 
-<script>
-    const existingClients = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ExistingClients));
-</script>

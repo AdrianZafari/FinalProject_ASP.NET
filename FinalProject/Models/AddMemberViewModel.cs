@@ -7,12 +7,12 @@ namespace FinalProject.Models;
 public class AddMemberViewModel
 {
     [Required]
-    [RegularExpression(@"^[A-Z][a-zA-Z]{1,49}$", ErrorMessage = "First name must start with a capital letter and be alphabetic.")]
+    [RegularExpression(@"^[A-Z](?:[a-zA-Z]+(?:-[a-zA-Z]+)*)?$", ErrorMessage = "First name must start with a capital letter and be alphabetic.")]
     [Display(Name = "First Name")]
     public string FirstName { get; set; } = null!;
 
     [Required]
-    [RegularExpression(@"^[A-Z][a-zA-Z]{1,49}$", ErrorMessage = "Last name must start with a capital letter and be alphabetic.")]
+    [RegularExpression(@"^[A-Z](?:[a-zA-Z]+(?:-[a-zA-Z]+)*)?$", ErrorMessage = "Last name must start with a capital letter and be alphabetic.")]
     [Display(Name = "Last Name")]
     public string LastName { get; set; } = null!;
 

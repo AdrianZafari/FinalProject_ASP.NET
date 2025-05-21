@@ -476,6 +476,7 @@ html, body {
                 border-color: var(--navlink-border-hover-color);
                 color: var(--navlink-text-hover-color);
                 text-decoration: none;
+                cursor: pointer;
             }
 
     .dropdown.dropdown-show {
@@ -1652,3 +1653,26 @@ textarea,
 .remove {
     color: var(--red) !important;
 }
+
+/* Project Filter Section */
+.project-filters {
+    position: relative;
+    top: 0;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: flex-start;
+    width: 30%;
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    background: var(--card-background-color);
+    cursor: pointer;
+    color: var(--text-color)
+}
+
+    .filter-btn.active {
+        background: var(--blue-light-opacity);
+        color: var(--text-color);
+    }

@@ -33,16 +33,16 @@ public class ProjectEntity
 
 
     [ForeignKey(nameof(User))]
-    public string? UserId { get; set; } = null!;
-    public virtual UserEntity? User { get; set; } = null!;
+    public string? UserId { get; set; } 
+    public virtual UserEntity? User { get; set; } 
 
     [ForeignKey(nameof(Member))]
-    public string? MemberId { get; set; } = null!;
-    public virtual MemberEntity? Member { get; set; } = null!;
+    public string? MemberId { get; set; } 
+    public virtual MemberEntity? Member { get; set; } 
 
 
     [ForeignKey(nameof(Status))]
     public int? StatusId { get; set; }
-    public virtual StatusEntity? Status { get; set; } = null!;
+    public virtual StatusEntity? Status { get; set; } 
 }
 

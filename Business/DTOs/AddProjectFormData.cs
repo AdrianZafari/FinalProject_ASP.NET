@@ -11,8 +11,7 @@ public class AddProjectFormData
     public DateTime? EndDate { get; set; }
     public decimal? Budget { get; set; }
 
-    //public string ClientId { get; set; } = null!;
     public string? UserId { get; set; }
-    public string MemberId { get; set; } = null!;
-    public int StatusId { get; set; }
+    public string? MemberId { get; set; } 
+    public int? StatusId { get; set; }
 }
