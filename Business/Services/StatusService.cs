@@ -1,4 +1,6 @@
-﻿using Business.Models;
+﻿using Business.DTOs;
+using Business.Models;
+using Data.Entities;
 using Data.Repositories;
 using Domain.Extensions;
 using Domain.Models;
@@ -7,6 +9,7 @@ namespace Business.Services;
 
 public interface IStatusService
 {
+    Task<StatusResult> CreateStatusAsync(AddStatusFormData formData);
     Task<StatusResult<Status>> GetStatusByIdAsync(int id);
     Task<StatusResult<Status>> GetStatusByNameAsync(string statusName);
     Task<StatusResult<IEnumerable<Status>>> GetStatusesAsync();
@@ -15,6 +18,20 @@ public interface IStatusService
 public class StatusService(IStatusRepository statusRepository) : IStatusService
 {
     private readonly IStatusRepository _statusRepository = statusRepository;
+
+    public async Task<StatusResult> CreateStatusAsync(AddStatusFormData formData)
+    {
+        if (formData == null)
+        {
+            return new StatusResult { Succeeded = false, StatusCode = 400, Error = "Invalid form information" };
+        }
+        var statusEntity = formData.MapTo<StatusEntity>();
+        var result = await _statusRepository.AddAsync(statusEntity);
+        return result.Succeeded
+            ? new StatusResult { Succeeded = true, StatusCode = 201 }
+            : new StatusResult { Succeeded = false, StatusCode = result.StatusCode, Error = result.Error };
+    }
+
 
     public async Task<StatusResult<IEnumerable<Status>>> GetStatusesAsync()
     {

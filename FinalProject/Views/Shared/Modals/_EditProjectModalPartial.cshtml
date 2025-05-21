@@ -104,6 +104,7 @@
                     <label asp-for="StatusId" class="form-label">Project Status</label>
                     <div class="form-select" data-placeholder="Choose a status">
                         <button type="button" class="form-select-trigger">
+                            <span asp-validation-for="MemberId"></span>
                             <span class="form-select-text"></span>
                         </button>
                         <ul class="form-select-options">

@@ -883,6 +883,30 @@ a {
         color: var(--text-muted-semilight-color);
     }
 
+/* Project Filter Section */
+.project-filters {
+    position: relative;
+    top: 0;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: flex-start;
+    width: 30%;
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    background: var(--card-background-color);
+    cursor: pointer;
+    color: var(--text-color)
+}
+
+    .filter-btn.active {
+        background: var(--blue-light-opacity);
+        color: var(--text-color);
+    }
+
+
 /* forms */
 form {
     width: 100%;
@@ -1159,6 +1183,20 @@ textarea,
     min-height: 150px;
 }
 
+/* for the edit, needed so that the validation isn't skipped when editing. Display: hidden skips this automatically. */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+
 .ql-editor {
     border: 1px solid var(--form-input-border-color);
     border-radius: var(--border-radius);
@@ -1187,6 +1225,29 @@ textarea,
     color: var(--form-input-text-color);
     background-color: var(--transparent);
 }
+
+/* Form Error */
+
+form .input-validation-error {
+    border-color: var(--red-dark);
+}
+
+form .field-validation-error {
+    position: absolute;
+    z-index: 1;
+    right: 0.18rem;
+    top: 1.85rem;
+    font-size: 0.8em;
+    background-color: var(--red-semilight);
+    color: var(--red-dark);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: inherit;
+    align-items: center;
+}
+
+
 /* autocomplete */
 .autocomplete-wrapper {
     position: relative;
@@ -1654,25 +1715,3 @@ textarea,
     color: var(--red) !important;
 }
 
-/* Project Filter Section */
-.project-filters {
-    position: relative;
-    top: 0;
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: flex-start;
-    width: 30%;
-}
-
-.filter-btn {
-    padding: 0.5rem 1rem;
-    margin-right: 0.5rem;
-    background: var(--card-background-color);
-    cursor: pointer;
-    color: var(--text-color)
-}
-
-    .filter-btn.active {
-        background: var(--blue-light-opacity);
-        color: var(--text-color);
-    }

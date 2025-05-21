@@ -14,10 +14,12 @@
 
     <div class="project-filters">
         <button class="filter-btn btn active" data-status="all">All</button>
-        <button class="filter-btn btn" data-status="1">Started</button>
-        <button class="filter-btn btn" data-status="2">Completed</button>
-        <button class="filter-btn btn" data-status="3">Dormant</button>
+        @foreach (var status in Model.Statuses.Reverse())
+        {
+            <button class="filter-btn btn" data-status="@status.Value">@status.Text</button>
+        }
     </div>
+
 
     <section id="project-list" class="project-list">
         @if (Model.Projects != null && Model.Projects.Any())

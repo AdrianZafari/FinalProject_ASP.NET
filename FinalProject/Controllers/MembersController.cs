@@ -56,10 +56,10 @@ public class MembersController(IMemberService memberService) : Controller
             var errors = ModelState
                 .Where(x => x.Value?.Errors.Count > 0)
                 .ToDictionary(kvp => kvp.Key,
-                              kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage))
-                .ToArray();
+                              kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage).ToArray()
+                );
 
-            return BadRequest(new { success = false, errors });
+            return BadRequest(new { errors });
         }
 
         string? imagePath = null;
@@ -123,6 +123,17 @@ public class MembersController(IMemberService memberService) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(string id, EditMemberViewModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState
+                .Where(x => x.Value?.Errors.Count > 0)
+                .ToDictionary(kvp => kvp.Key,
+                              kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage).ToArray()
+                );
+
+            return BadRequest(new { errors });
+        }
+
         if (id != model.Id)
         {
             ModelState.AddModelError(string.Empty, "Mismatched ID.");

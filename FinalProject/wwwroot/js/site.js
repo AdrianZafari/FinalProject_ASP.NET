@@ -1,46 +1,97 @@
-﻿// FORM VALIDATION LOGIC
+﻿// FORM submit LOGIC
 
-//const forms = document.querySelectorAll('form')
-//forms.forEach(form => {
-//    form.addEventListener('submit', async (e) => {
-//        e.preventDefault()
-//        const targetId = form.getAttribute('data-target')
-//        const targetElement = document.querySelector(targetId)
-//        e.preventDefault()
+const forms = document.querySelectorAll('form');
 
-//        const formData = new FormData(form)
-
-//        try {
-//            const res = await fetch(form.action, {
-//                method: 'post',
-//                body: formData
-//            })
-
-//            if (!res.status === 400) {
-//                const data = await res.json()
-
-//                if (data.errors) {
-//                    Object.keys(data.errors).forEach(key => {
-//                        const input = form.querySelector(`[name="${key}"]`)
-//                        if (input) {
-                            
-//                        }
+forms.forEach(form => {
 
 
-//                        const span = form.querySelector(`span[data-valmsg-for="${key}"]`)
-//                        if (span) {
-//                            span.innerText = data.errors[key].join('\n')
-//                        } 
-//                    })
-//                }
-//            } 
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-//        }
-//        catch (error) {
-//            console.error('Error:', error)
-//        }
-//    })
-//}
+        clearErrorMessages(form);
+
+        const formData = new FormData(form);
+
+        try {
+            const quillEditor = form.querySelector("#edit-project-description-wysiwyg-editor");
+            const quillInstance = window.editProjectDescriptionQuill;
+
+            if (quillEditor && quillInstance) {
+                const plainText = quillInstance.getText().trim();
+                if (plainText.length === 0) {
+                    addErrorMessage(form, "Description", "Required");
+                    return; // Stop form submission
+                }
+
+                // Update hidden textarea with HTML content from Quill
+                const html = quillInstance.root.innerHTML;
+                form.querySelector("#edit-project-description").value = html;
+            }
+            const res = await fetch(form.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (res.status === 400) {
+                const data = await res.json();
+
+                let errorMap = {};
+
+                // Format A: data.errors as { key: [errors] }
+                if (data.errors && !Array.isArray(data.errors)) {
+                    errorMap = data.errors;
+                }
+
+                // Format B: data.errors as array of { Key, Value }
+                if (Array.isArray(data.errors)) {
+                    data.errors.forEach(err => {
+                        errorMap[err.Key] = err.Value;
+                    });
+                }
+
+                // Inject error messages into form
+                Object.keys(errorMap).forEach(key => {
+                    addErrorMessage(form, key, errorMap[key].join('\n'));
+                });
+            } else if (res.redirected) {
+                // Handle a redirect from the server (like RedirectToAction)
+                window.location.href = res.url;
+            } else {
+                // Optional: Reload or redirect manually
+                window.location.reload(); // or redirect to a known URL
+            }
+
+        } catch (error) {
+            console.error("Error submitting the form", error);
+        }
+    });
+});
+
+function clearErrorMessages(form) {
+    form.querySelectorAll('[data-val="true"], .form-input, input, textarea, select').forEach(input => {
+        input.classList.remove('input-validation-error');
+    });
+
+    form.querySelectorAll('span[data-valmsg-for], span.field-validation-error, span.text-danger').forEach(span => {
+        span.classList.remove('field-validation-error');
+        span.innerText = '';
+    });
+}
+
+function addErrorMessage(form, key, errorMessage) {
+    const input = form.querySelector(`[name="${key}"]`);
+    if (input) {
+        input.classList.add('input-validation-error');
+    }
+
+    const span = form.querySelector(`span[data-valmsg-for="${key}"]`);
+    if (span) {
+        span.innerText = errorMessage;
+        span.classList.add('field-validation-error');
+    }
+}
+
+
 
 
 

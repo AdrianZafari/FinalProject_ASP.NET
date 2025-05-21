@@ -10,27 +10,29 @@ public class EditProjectViewModel
     [Display(Name = "Project Image")]
     public IFormFile? ProjectImage { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Required")]
     [Display(Name = "Project Name")]
+    [RegularExpression(@"^[A-Z][a-zA-Z]*(?:[ -][a-zA-Z]+)*$", ErrorMessage = "Invalid project name")]
     [StringLength(50, MinimumLength = 2)]
     public string ProjectName { get; set; } = null!;
 
-    [Required]
+    [Required(ErrorMessage = "Required")]
     [Display(Name = "Client Name")]
+    [RegularExpression(@"^[A-Z][a-zA-Z0-9 .,'&@#()\-!]*$", ErrorMessage = "Invalid client name")]
     [StringLength(100, MinimumLength = 1)]
     public string ClientName { get; set; } = null!;
 
-    [Required]
+    [Required(ErrorMessage = "Required")]
     [Display(Name = "Description")]
-    [StringLength(250)]
+    [StringLength(250, ErrorMessage = "Max 250 characters")]
     public string Description { get; set; } = null!;
 
-    [Required]
+    [Required(ErrorMessage = "Required")]
     [Display(Name = "Start Date")]
     public DateTime StartDate { get; set; } = DateTime.Now;
 
     [Display(Name = "End Date")]
-    public DateTime? EndDate { get; set; } = DateTime.Now;
+    public DateTime? EndDate { get; set; }
 
     [Display(Name = "Budget")]
     public decimal? Budget { get; set; } = 0;

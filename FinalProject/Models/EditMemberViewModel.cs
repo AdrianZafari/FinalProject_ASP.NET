@@ -7,30 +7,32 @@ public class EditMemberViewModel
 
     public string Id { get; set; } = null!;
 
-    [Required]
+    [Required(ErrorMessage = "Required")]
     [Display(Name = "First Name")]
-    [RegularExpression(@"^[A-Z](?:[a-zA-Z]+(?:-[a-zA-Z]+)*)?$", ErrorMessage = "First name must start with a capital letter and be alphabetic.")]
+    [RegularExpression(@"^[A-Z](?:[a-zA-Z]+(?:-[a-zA-Z]+)*)?$", ErrorMessage = "Invalid first name")]
     public string FirstName { get; set; } = null!;
 
-    [Required]
+    [Required(ErrorMessage = "Required")]
     [Display(Name = "Last Name")]
-    [RegularExpression(@"^[A-Z](?:[a-zA-Z]+(?:-[a-zA-Z]+)*)?$", ErrorMessage = "Last name must start with a capital letter and be alphabetic.")]
+    [RegularExpression(@"^[A-Z](?:[a-zA-Z]+(?:-[a-zA-Z]+)*)?$", ErrorMessage = "Invalid last name")]
     public string LastName { get; set; } = null!;
 
-    [Required]
-    [EmailAddress(ErrorMessage = "Enter a valid email address.")]
+    [Required(ErrorMessage = "Required")]
+    [EmailAddress(ErrorMessage = "Invalid email address.")]
     public string Email { get; set; } = null!;
 
+    [Required(ErrorMessage = "Required")]
     [Phone]
     [Display(Name = "Phone Number")]
-    [RegularExpression(@"^\+?\d{7,15}$", ErrorMessage = "Phone number must be between 7 and 15 digits.")]
+    [RegularExpression(@"^\+?\d{7,15}$", ErrorMessage = "Invalid phone number")]
     public string? PhoneNumber { get; set; }
 
+    [Required(ErrorMessage = "Required")]
     [Display(Name = "Job Title")]
-    [RegularExpression(@"^[\w\s\.,'-]{2,100}$", ErrorMessage = "Enter a valid job title.")]
+    [RegularExpression(@"^[\w\s\.,'-]{2,100}$", ErrorMessage = "Invalid job title")]
     public string? JobTitle { get; set; }
 
-    [RegularExpression(@"^[\w\s\.,'-]{5,100}$", ErrorMessage = "Enter a valid address.")]
+    [RegularExpression(@"^[\w\s\.,'-]{5,100}$", ErrorMessage = "Invalid address")]
     public string? Address { get; set; }
 
     [Display(Name = "Date of Birth")]

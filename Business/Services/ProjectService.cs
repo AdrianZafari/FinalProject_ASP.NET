@@ -29,8 +29,33 @@ public class ProjectService(IProjectRepository projectRepository, IStatusService
             return new ProjectResult { Succeeded = false, StatusCode = 400, Error = "Not all required fields are filled." };
         }
 
+        // Check if the statuses Started, Completed, and Dormant are already in the database, creates them if not.
+        var existingStatusesResult = await _statusService.GetStatusesAsync();
+        var existingStatuses = existingStatusesResult.Result?.ToList() ?? new List<Status>();
+
+        bool hasStarted = existingStatuses.Any(s => s.StatusName == "Started");
+        bool hasCompleted = existingStatuses.Any(s => s.StatusName == "Completed");
+        bool hasDormant = existingStatuses.Any(s => s.StatusName == "Dormant");
+
+        if (!hasStarted)
+        {
+            await _statusService.CreateStatusAsync(new AddStatusFormData { StatusName = "Started" });
+        }
+
+        if (!hasCompleted)
+        {
+            await _statusService.CreateStatusAsync(new AddStatusFormData { StatusName = "Completed" });
+        }
+
+        if (!hasDormant)
+        {
+            await _statusService.CreateStatusAsync(new AddStatusFormData { StatusName = "Dormant" });
+        }
+
+        // Business as usual after this point
+
         var projectEntity = formData.MapTo<ProjectEntity>();
-        var statusResult = await _statusService.GetStatusByIdAsync(1); // Status ID 1 is "STARTED" and the default for any project created
+        var statusResult = await _statusService.GetStatusByNameAsync("Started"); // Status ID 1 is "STARTED" and the default for any project created
         var status = statusResult.Result;
 
         projectEntity.StatusId = status!.Id;

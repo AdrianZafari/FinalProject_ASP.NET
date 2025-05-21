@@ -79,7 +79,7 @@ public class AuthController(IAuthService authService) : Controller
 
         if (result.Succeeded)
         {
-            return RedirectToAction("Login", "Auth"); // Or wherever you want to redirect
+            return RedirectToAction("Login", "Auth");
         }
         else
         {

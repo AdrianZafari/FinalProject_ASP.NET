@@ -21,6 +21,7 @@ public class ProjectsController(IProjectService projectService, IMemberService m
     {
         var viewModel = new ProjectsViewModel()
         {
+            Statuses = await SetStatuses(),
             Projects = await SetProjectsAsync(),
             AddProjectFormData = new AddProjectViewModel
             {
@@ -40,19 +41,16 @@ public class ProjectsController(IProjectService projectService, IMemberService m
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(AddProjectViewModel model)
     {
-        
+
         if (!ModelState.IsValid)
         {
             var errors = ModelState
                 .Where(x => x.Value?.Errors.Count > 0)
                 .ToDictionary(kvp => kvp.Key,
-                              kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage))
-                .ToArray();
+                              kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage).ToArray()
+                );
 
-            TempData["CreateErrors"] = errors;
-            TempData["ShowCreateModal"] = true;
-
-            return RedirectToAction("Index");
+            return BadRequest(new { errors });
         }
 
         string? imagePath = null;
@@ -97,6 +95,17 @@ public class ProjectsController(IProjectService projectService, IMemberService m
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(string id, EditProjectViewModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState
+                .Where(x => x.Value?.Errors.Count > 0)
+                .ToDictionary(kvp => kvp.Key,
+                              kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage).ToArray()
+                );
+
+            return BadRequest(new { errors });
+        }
+
         if (id != model.Id)
         {
             ModelState.AddModelError(string.Empty, "Mismatched ID.");
@@ -264,4 +273,5 @@ public class ProjectsController(IProjectService projectService, IMemberService m
             Text = s.StatusName
         });
     }
+
 }
