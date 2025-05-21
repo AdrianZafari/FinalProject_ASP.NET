@@ -1,5 +1,5 @@
 # Initial setup
-Create a database file, store it in the data class library, setup the connection string FinalProject/appsettings.json 
+Create a database file, store it in the "Data" class library, setup the connection string in FinalProject/appsettings.json 
 
 ## Current features lacking
 - No External forms of logging in, ExternalAuthController does not do anything at the moment.
